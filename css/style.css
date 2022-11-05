@@ -3867,3 +3867,39 @@ h6 {
 /*---------------------------------------------------- */
 
 /*# sourceMappingURL=style.css.map */
+
+
+/* New CSS */
+#noteContainer {
+  background-color: #063970;
+  height: 800px;
+}
+
+.note {
+  width: 40px;
+  height: auto;
+}
+
+.leftNote {
+  position: absolute;
+  left: 450px;
+  top: 0px
+}
+
+.leftMiddleNote {
+  position: absolute;
+  left: 625px;
+  top: 50px;
+}
+
+.rightMiddleNote {
+  position: absolute;
+  left: 800px;
+  top: 100px;
+}
+
+.rightNote {
+  position: absolute;
+  left: 975px;
+  top: 150px;
+}
