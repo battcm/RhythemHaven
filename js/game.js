@@ -37,7 +37,17 @@ rhit.Game = class {
     }
 }
 
-rhit.main = function () {
+rhit.game = function () {
+	console.log("Ready");
+    const Notes = document.querySelectorAll(".note");
+    let x = 0;
+    document.querySelector("#moveDownButton").onclick = () => {
+        Notes.forEach((note) => {
+            let y = parseInt(note.dataset.height);
+            note.style=`top: ${y}px`
+            note.dataset.height = `${y + 10}`
+        })
+    }
 };
 
-rhit.main();
+rhit.game();
