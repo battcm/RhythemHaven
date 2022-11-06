@@ -2,14 +2,9 @@ var rhit = rhit || {};
 
 rhit.Game = class {
     constructor() {
-        //Instance variables
-        this.level = null;
-        this.totalNotes = 0;
-        this.perfectNotes = 0;
-        this.greatNotes = 0;
-        this.goodNotes = 0;
-        this.score = 0;
-        this.noteStreak = 0;
+        this.cycles = 0;
+        this.isPaused = false;
+        this.begin();
     }
 
     updateScore() {
@@ -17,11 +12,30 @@ rhit.Game = class {
     }
 
     begin() {
+        setInterval(this.runOneCycle, 250);
+    }
 
+    runOneCycle() {
+        if (!this.isPaused) {
+            this.cycles++;
+            const Notes = document.querySelectorAll(".note");
+            console.log("one game cycle");
+            Notes.forEach((note) => {
+                let y = parseInt(note.dataset.height);
+                note.style=`top: ${y}px`;
+                note.dataset.height = `${y + 10}`;
+                if (y >= 500) {
+                    note.remove();
+                }
+            })
+            if (this.cycles > 25) {
+                this.isPaused = true;
+            }
+        }
     }
 
     pause() {
-
+        this.isPaused = !this.isPaused;
     }
 
     checkForKeyPressed() {
@@ -36,73 +50,6 @@ rhit.Game = class {
 
     }
 }
-
-rhit.game = function () {
-	console.log("Ready");
-    document.querySelector("#moveDownButton").onclick = () => {
-        const Notes = document.querySelectorAll(".note");
-        Notes.forEach((note) => {
-            let y = parseInt(note.dataset.height);
-            note.style=`top: ${y}px`
-            note.dataset.height = `${y + 10}`
-            if (y == 200) {
-                switch (note.className) {
-                    case "note leftNote":
-                        console.log("left");
-                        document.addEventListener("keydown", (event) => {
-                            if (event.key == "d") {
-                                console.log("pressed the d key");
-                            }
-                            removeEventListener("keydown", )
-                        })
-                        break;
-                    case "note leftMiddleNote":
-                        console.log("leftMiddle");
-                        document.addEventListener("keydown", (event) => {
-                            if (event.key == "f") {
-                                console.log("pressed the f key");
-                            }
-                        })
-                        break;
-                    case "note rightMiddleNote":
-                        console.log("rightMiddle");
-                        document.addEventListener("keydown", (event) => {
-                            if (event.key == "j") {
-                                console.log("pressed the j key");
-                            }
-                        })
-                        break;
-                    case "note rightNote":
-                        console.log("right");
-                        document.addEventListener("keydown", (event) => {
-                            if (event.key == "k") {
-                                console.log("pressed the k key");
-                            }
-                        })
-                        break;
-                    default:
-                        break; 
-                }
-            }
-        })
-    }
-
-    document.querySelector("#spawnLeftButton").onclick = () => {
-        document.querySelector("#noteContainer").appendChild(createNoteElement("leftNote"));
-    }
-
-    document.querySelector("#spawnLeftMiddleButton").onclick = () => {
-        document.querySelector("#noteContainer").appendChild(createNoteElement("leftMiddleNote"));
-    }
-
-    document.querySelector("#spawnRightMiddleButton").onclick = () => {
-        document.querySelector("#noteContainer").appendChild(createNoteElement("rightMiddleNote"));
-    }
-
-    document.querySelector("#spawnRightButton").onclick = () => {
-        document.querySelector("#noteContainer").appendChild(createNoteElement("rightNote"));
-    }
-};
 
 function pressedD (event) {
     if (event.key == "d") {
@@ -128,4 +75,25 @@ function createNoteElement (noteType) {
 //   </div>`)
 // }
 
-rhit.game();
+rhit.main = function () {
+	console.log("Ready");
+    const game = new rhit.Game();
+
+    document.querySelector("#spawnLeftButton").onclick = () => {
+        document.querySelector("#noteContainer").appendChild(createNoteElement("leftNote"));
+    }
+
+    document.querySelector("#spawnLeftMiddleButton").onclick = () => {
+        document.querySelector("#noteContainer").appendChild(createNoteElement("leftMiddleNote"));
+    }
+
+    document.querySelector("#spawnRightMiddleButton").onclick = () => {
+        document.querySelector("#noteContainer").appendChild(createNoteElement("rightMiddleNote"));
+    }
+
+    document.querySelector("#spawnRightButton").onclick = () => {
+        document.querySelector("#noteContainer").appendChild(createNoteElement("rightNote"));
+    }
+};
+
+rhit.main();
