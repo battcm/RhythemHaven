@@ -1,36 +1,37 @@
 var rhit = rhit || {};
 
+rhit.publicGame = null;
+
 rhit.Game = class {
     constructor() {
         this.cycles = 0;
+        this.score = 0;
         this.isPaused = false;
+        console.log(this.cycles);
         this.begin();
     }
 
     updateScore() {
-
+        document.querySelector("#score").innerHTML = `Score: ${this.score}`;
     }
 
     begin() {
-        setInterval(this.runOneCycle, 250);
+        setInterval(this.runOneCycle.bind(this), 40);
     }
 
     runOneCycle() {
         if (!this.isPaused) {
-            this.cycles++;
-            const Notes = document.querySelectorAll(".note");
-            console.log("one game cycle");
+            // console.log("one game cycle");
+            this.cycles = this.cycles + 1;
+            let Notes = document.querySelectorAll(".note");
             Notes.forEach((note) => {
                 let y = parseInt(note.dataset.height);
                 note.style=`top: ${y}px`;
-                note.dataset.height = `${y + 10}`;
-                if (y >= 500) {
+                note.dataset.height = `${y + 5}`;
+                if (y >= 1000) {
                     note.remove();
                 }
             })
-            if (this.cycles > 25) {
-                this.isPaused = true;
-            }
         }
     }
 
@@ -59,11 +60,16 @@ function pressedD (event) {
 }
 
 function createNoteElement (noteType) {
-    const note = document.createElement('img');
+    let note = document.createElement('img');
     note.src="img/Music_Note.png";
     note.dataset.height = "0";
+    note.dataset.isScored = "false";
     note.className = `note ${noteType}`; 
     return note; 
+}
+
+function checkScoringNotes() {
+    
 }
 
 // _createCard(movieQuote) {
@@ -77,7 +83,75 @@ function createNoteElement (noteType) {
 
 rhit.main = function () {
 	console.log("Ready");
-    const game = new rhit.Game();
+    rhit.publicGame = new rhit.Game();
+
+    document.addEventListener("keydown", (event) => {
+        let Notes = null;
+        switch(event.key) {
+            case "d":
+                Notes = document.querySelectorAll(".leftNote");
+                Notes.forEach((note) => {
+                    if (note.dataset.scored == "false") {
+                        console.log("left note not scored");
+                        let y = parseInt(note.dataset.height);
+                        if (y >= 350) {
+                            rhit.publicGame.score += 5;
+                            rhit.publicGame.updateScore();
+                            note.dataset.scored = "true";
+                        }
+                    }
+                })
+                return;
+            case "f":
+                Notes = document.querySelectorAll(".leftMiddleNote");
+                Notes.forEach((note) => {
+                    if (note.dataset.scored == "false") {
+                        console.log("left middle note not scored");
+                        let y = parseInt(note.dataset.height);
+                        if (y >= 350) {
+                            rhit.publicGame.score += 5;
+                            rhit.publicGame.updateScore();
+                            note.dataset.scored = "true";
+                        }
+                    }
+                })
+                return;
+            case "j":
+                Notes = document.querySelectorAll(".rightMiddleNote");
+                Notes.forEach((note) => {
+                    if (note.dataset.scored == "false") {
+                        console.log("right middle note not scored");
+                        let y = parseInt(note.dataset.height);
+                        if (y >= 350) {
+                            rhit.publicGame.score += 5;
+                            rhit.publicGame.updateScore();
+                            note.dataset.scored = "true";
+                        }
+                    }
+                })
+                return;
+            case "k":
+                Notes = document.querySelectorAll(".rightNote");
+                Notes.forEach((note) => {
+                    if (note.dataset.scored == "false") {
+                        console.log("right note not scored");
+                        let y = parseInt(note.dataset.height);
+                        if (y >= 350) {
+                            rhit.publicGame.score += 5;
+                            rhit.publicGame.updateScore();
+                            note.dataset.scored = "true";
+                        }
+                    }
+                })
+                return;
+            default:
+                return;
+        }
+    })
+
+    document.querySelector("#pause").onclick = () => {
+        rhit.publicGame.pause();
+    }
 
     document.querySelector("#spawnLeftButton").onclick = () => {
         document.querySelector("#noteContainer").appendChild(createNoteElement("leftNote"));
