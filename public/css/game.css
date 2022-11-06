@@ -1,33 +1,62 @@
 #noteContainer {
     background-color: #063970;
     height: 800px;
+    z-index: 95;
   }
   
-  .note {
-    width: 40px;
-    height: auto;
+.note {
+    width: auto;
+    height: 60px;
+    z-index: 102;
   }
   
-  .leftNote {
+.leftNote {
     position: absolute;
     left: 450px;
     top: 0px
   }
   
-  .leftMiddleNote {
+.leftMiddleNote {
     position: absolute;
     left: 625px;
-    top: 50px;
+    top: 0px;
   }
   
-  .rightMiddleNote {
+.rightMiddleNote {
     position: absolute;
     left: 800px;
-    top: 100px;
+    top: 0px;
   }
   
-  .rightNote {
+.rightNote {
     position: absolute;
     left: 975px;
-    top: 150px;
+    top: 0px;
   }
+
+#perfectZone {
+    position: absolute;
+    background-color: green;
+    height: 65px;
+    width: 1200px;
+    top: 500px;
+    z-index: 101;
+}
+
+#greatZone {
+    position: absolute;
+    background-color: yellow;
+    height: 95px;
+    width: 1200px;
+    top: 485px;
+    z-index: 100;
+}
+
+#goodZone {
+    position: absolute;
+    background-color: red;
+    height: 135px;
+    width: 1200px;
+    top: 465px;
+    z-index: 99;
+}
