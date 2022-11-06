@@ -88,6 +88,8 @@
 							<a href="contact.html">Log In</a>
 						</div>
 						<h2>Log In</h2>
+
+                        
 						
 					</div>
 				</div>
@@ -96,6 +98,27 @@
         <!--================End Home Banner Area =================-->
         
         
+        <form>
+            <div class="form-group">
+            <div class="form-row">
+              <label for="inputEmail">Email address</label>
+              <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+            </div>
+            </div>
+            <div class="form-row">
+            <div class="form-group">
+              <label for="inputPassword">Password</label>
+              <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+            </div>
+            </div>
+            <div class="form-row">
+            <button type="submit" id="signInButton" class="btn btn-primary">Sign In</button>
+            </div>
+            <div class="form-row">
+            <button type="submit" id="signUpButton" class="btn btn-primary">Register</button>
+            </div>
+            <div id="firebaseui-auth-container"></div>
+        </form>
         
         
         <!-- Optional JavaScript -->
@@ -122,5 +145,11 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
         <script src="js/gmaps.min.js"></script>
         <script src="js/theme.js"></script>
+        <!--firebase auth-->
+        <script src="https://www.gstatic.com/firebasejs/ui/5.0.0/firebase-ui-auth.js"></script>
+    
+        <script src="scripts/main.js"></script>
+        <script>$("body").bootstrapMaterialDesign();</script>
+    
     </body>
 </html>
