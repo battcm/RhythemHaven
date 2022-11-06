@@ -17,17 +17,17 @@
   .leftMiddleNote {
     position: absolute;
     left: 625px;
-    top: 50px;
+    top: 0px;
   }
   
   .rightMiddleNote {
     position: absolute;
     left: 800px;
-    top: 100px;
+    top: 0px;
   }
   
   .rightNote {
     position: absolute;
     left: 975px;
-    top: 150px;
+    top: 0px;
   }
