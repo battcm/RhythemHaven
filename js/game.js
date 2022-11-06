@@ -6,13 +6,16 @@ rhit.Game = class {
     constructor() {
         this.cycles = 0;
         this.score = 0;
+        this.noteStreak = 0;
         this.isPaused = false;
         console.log(this.cycles);
         this.begin();
     }
 
-    updateScore() {
+    updateScore(scoreIncrease) {
+        this.score += scoreIncrease;
         document.querySelector("#score").innerHTML = `Score: ${this.score}`;
+        document.querySelector("#noteStreak").innerHTML = `Hit Streak: ${this.noteStreak}`;
     }
 
     begin() {
@@ -21,13 +24,20 @@ rhit.Game = class {
 
     runOneCycle() {
         if (!this.isPaused) {
-            // console.log("one game cycle");
             this.cycles = this.cycles + 1;
+            if (this.cycles % 20 == 0){
+                // document.querySelector("#noteContainer").appendChild(createNoteElement("leftNote"));
+            }
             let Notes = document.querySelectorAll(".note");
             Notes.forEach((note) => {
                 let y = parseInt(note.dataset.height);
                 note.style=`top: ${y}px`;
                 note.dataset.height = `${y + 5}`;
+                if (y > 540 && note.dataset.scored == "false") {
+                    note.dataset.scored = "miss";
+                    this.noteStreak = 0;
+                    this.updateScore(0);
+                }
                 if (y >= 1000) {
                     note.remove();
                 }
@@ -62,14 +72,35 @@ function pressedD (event) {
 function createNoteElement (noteType) {
     let note = document.createElement('img');
     note.src="img/Music_Note.png";
-    note.dataset.height = "0";
-    note.dataset.isScored = "false";
+    note.dataset.height = "-50";
+    note.dataset.scored = "false";
     note.className = `note ${noteType}`; 
     return note; 
 }
 
-function checkScoringNotes() {
-    
+function handleScoringNotes(noteType) {
+    let Notes = document.querySelectorAll(noteType);
+        Notes.forEach((note) => {
+            if (note.dataset.scored == "false") {
+                let y = parseInt(note.dataset.height);
+                if (y >= 500 && y <= 505) {
+                    note.dataset.scored = "hit";
+                    console.log("perfect");
+                    rhit.publicGame.noteStreak++;
+                    rhit.publicGame.updateScore(25);
+                } else if (y >= 485 && y <= 520) {
+                    note.dataset.scored = "hit";
+                    console.log("great");
+                    rhit.publicGame.noteStreak++;
+                    rhit.publicGame.updateScore(10);
+                } else if (y >= 465 && y <= 540) {
+                    note.dataset.scored = "hit";
+                    console.log("good");
+                    rhit.publicGame.noteStreak++;
+                    rhit.publicGame.updateScore(5);
+                }
+            }
+        })
 }
 
 // _createCard(movieQuote) {
@@ -89,60 +120,16 @@ rhit.main = function () {
         let Notes = null;
         switch(event.key) {
             case "d":
-                Notes = document.querySelectorAll(".leftNote");
-                Notes.forEach((note) => {
-                    if (note.dataset.scored == "false") {
-                        console.log("left note not scored");
-                        let y = parseInt(note.dataset.height);
-                        if (y >= 350) {
-                            rhit.publicGame.score += 5;
-                            rhit.publicGame.updateScore();
-                            note.dataset.scored = "true";
-                        }
-                    }
-                })
+                handleScoringNotes(".leftNote");
                 return;
             case "f":
-                Notes = document.querySelectorAll(".leftMiddleNote");
-                Notes.forEach((note) => {
-                    if (note.dataset.scored == "false") {
-                        console.log("left middle note not scored");
-                        let y = parseInt(note.dataset.height);
-                        if (y >= 350) {
-                            rhit.publicGame.score += 5;
-                            rhit.publicGame.updateScore();
-                            note.dataset.scored = "true";
-                        }
-                    }
-                })
+                handleScoringNotes(".leftMiddleNote");
                 return;
             case "j":
-                Notes = document.querySelectorAll(".rightMiddleNote");
-                Notes.forEach((note) => {
-                    if (note.dataset.scored == "false") {
-                        console.log("right middle note not scored");
-                        let y = parseInt(note.dataset.height);
-                        if (y >= 350) {
-                            rhit.publicGame.score += 5;
-                            rhit.publicGame.updateScore();
-                            note.dataset.scored = "true";
-                        }
-                    }
-                })
+                handleScoringNotes(".rightMiddleNote");
                 return;
             case "k":
-                Notes = document.querySelectorAll(".rightNote");
-                Notes.forEach((note) => {
-                    if (note.dataset.scored == "false") {
-                        console.log("right note not scored");
-                        let y = parseInt(note.dataset.height);
-                        if (y >= 350) {
-                            rhit.publicGame.score += 5;
-                            rhit.publicGame.updateScore();
-                            note.dataset.scored = "true";
-                        }
-                    }
-                })
+                handleScoringNotes(".rightNote");
                 return;
             default:
                 return;
