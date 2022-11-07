@@ -12,7 +12,10 @@ rhythm.FB_KEY_GOOD = "good";
 rhythm.FB_KEY_PERFECT = "perfect";
 rhythm.FB_KEY_GREAT = "great";
 rhythm.UserStatsManager = null;
+const firebase = require('firebase');
 //user = currently signed in user
+
+
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -23,7 +26,10 @@ function htmlToElement(html) {
 
 rhythm.main = function () {
 	rhythm.UserStatsManager = new rhythm.UserStatsManager();
+	const app = initializeApp(firebaseConfig);
+	const db = getFirestore(app);
 
+	
     firebase.auth().onAuthStateChanged((user) => {
 		if (user) {
 		  var displayName = user.displayName;
@@ -237,7 +243,7 @@ rhythm.UserStatsManager = class {
 		const db = firebase.firestore().collection(rhythm.FB_COLLECTION_USERSTATS);
 		
 		const docRef = doc(db, FB_COLLECTION_USERSTATS, uid);
-        const docSnap = await getDoc(docRef);
+        //const docSnap = await getDoc(docRef);
 
 		
 		const userByUid = new rhythm.User(
@@ -334,9 +340,9 @@ rhythm.GlobalLeaderboardController = class {
 	}
 }
 
-rhythm.StatsPageController(pageUser) = class {
-	constructor() {
-		const pageUserObject = getUserByUid(pageUser);
+rhythm.StatsPageController = class {
+	constructor(pageUserUid) {
+		this.pageUserObject = getUserByUid(pageUserUid);
 		rhythm.userStatsManager.beginListening(this.updateView.bind(this));
 	}
 
@@ -344,7 +350,7 @@ rhythm.StatsPageController(pageUser) = class {
 		const title = document.querySelector("#statsTitle");
 
 			//if signed in user = the specified uid, set the title to my stats
-			if(user.uid == pageUser){
+			if(user.uid == this.pageUserObject.uid){
 				title.innerHtml = 
 				`
 				<h2>My Stats</h2>
@@ -354,21 +360,21 @@ rhythm.StatsPageController(pageUser) = class {
 			else{
 				title.innerHtml = 
 				`
-				<h2>${pageUser.uid}'s Stats</h2>
-				<h1>${pageUser.uid}'s Stats</h1>
+				<h2>${pageUserObject.uid}'s Stats</h2>
+				<h1>${pageUserObject.uid}'s Stats</h1>
 				`;
 			}
 		
 			//updates all the stats
-			document.querySelector("#songsPlayedText").innerHtml = pageUser.songsPlayed;
-			document.querySelector("#totalScoreText").innerHtml = pageUser.totalScore;
-			document.querySelector("#accuracyText").innerHtml = `${pageUser.accuracy}%`;
-			document.querySelector("#hoursSpentText").innerHtml = pageUser.hoursSpent;
-			document.querySelector("#totalHitsText").innerHtml = pageUser.totalNotes;
-			document.querySelector("#perfectText").innerHtml = pageUser.perfect;
-			document.querySelector("#greatText").innerHtml = pageUser.great;
-			document.querySelector("#goodText").innerHtml = pageUser.good;
-			document.querySelector("#okText").innerHtml = pageUser.ok;
+			document.querySelector("#songsPlayedText").innerHtml = pageUserObject.songsPlayed;
+			document.querySelector("#totalScoreText").innerHtml = pageUserObject.totalScore;
+			document.querySelector("#accuracyText").innerHtml = `${pageUserObject.accuracy}%`;
+			document.querySelector("#hoursSpentText").innerHtml = pageUserObject.hoursSpent;
+			document.querySelector("#totalHitsText").innerHtml = pageUserObject.totalNotes;
+			document.querySelector("#perfectText").innerHtml = pageUserObject.perfect;
+			document.querySelector("#greatText").innerHtml = pageUserObject.great;
+			document.querySelector("#goodText").innerHtml = pageUserObject.good;
+			document.querySelector("#okText").innerHtml = pageUserObject.ok;
 
 
 	}
