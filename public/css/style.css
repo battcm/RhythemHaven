@@ -3866,5 +3866,36 @@ h6 {
 ============================================================================================ */
 /*---------------------------------------------------- */
 
+/* Settings Page CSS
+  ============================================================================================ */
+  #keybindFormContainer {
+
+    margin-left: 30%;
+
+    margin-right: 30%;
+
+  }
+
+  #offsetFormContainer {
+
+    margin-left: 30%;
+
+    margin-right: 30%;
+
+  }
+
+  #submitKeybindsButton {
+    margin-top: 1em;
+  }
+
+  #submitOffsetButton {
+    margin-top: 1em;
+  }
+
+  /* End Settings Page CSS
+  ============================================================================================ */
+
+
+
 /*# sourceMappingURL=style.css.map */
 

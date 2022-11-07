@@ -18,9 +18,10 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
     </head>
-    <body class="upcoming_games">
-
-		<!--================Header Menu Area =================-->
+    <body>
+		<div id="settingsPage">
+        
+        <!--================Header Menu Area =================-->
 		<header class="header_area">
 			<div class="main_menu">
 				<nav class="navbar navbar-expand-lg navbar-light">
@@ -58,12 +59,8 @@
 								</li>
 	
 								<li class="nav-item submenu dropdown">
-									<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-									 aria-expanded="false">Settings</a>
-									<ul class="dropdown-menu">
-										<li class="nav-item"><a class="nav-link" href="gameplay.html">Gameplay</a>
-										<li class="nav-item"><a class="nav-link" href="key-bindings.html">Key Bindings</a>
-									</ul>
+									<a href="settings.html" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+									 aria-expanded="false">My Gameplay Settings</a>
 								</li>
 								<li class="nav-item active"><a class="nav-link" href="leader-board.html">LeaderBoard</a></li>
 							</ul>
@@ -76,42 +73,82 @@
 			</div>
 		</header>
 		<!--================Header Menu Area =================-->
-	
-		<!--================Home Banner Area =================-->
-		<section class="banner_area">
-			<div class="banner_inner d-flex align-items-center">
-				<div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
+        
+        <!--================Home Banner Area =================-->
+        <section class="banner_area">
+            <div class="banner_inner d-flex align-items-center">
+            	<div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
 				<div class="container">
 					<div class="banner_content text-center">
 						<div class="page_link">
 							<a href="index.html">Settings</a>
-							<a href="games.html">Key Bindings</a>
+							<a href="elements.html">Gameplay</a>
 						</div>
-						<h2>Key Bindings</h2>
+						<h2>Settings</h2>
 					</div>
 				</div>
-			</div>
-		</section>
-		<!--================End Home Banner Area =================-->
-	
-		<!-- Optional JavaScript -->
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script src="js/jquery-3.2.1.min.js"></script>
-		<script src="js/popper.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/stellar.js"></script>
-		<script src="js/jquery.magnific-popup.min.js"></script>
-		<script src="vendors/nice-select/js/jquery.nice-select.min.js"></script>
-		<script src="vendors/isotope/imagesloaded.pkgd.min.js"></script>
-		<script src="vendors/isotope/isotope-min.js"></script>
-		<script src="vendors/owl-carousel/owl.carousel.min.js"></script>
-		<script src="js/jquery.ajaxchimp.min.js"></script>
-		<script src="vendors/counter-up/jquery.waypoints.min.js"></script>
-		<script src="vendors/counter-up/jquery.counterup.min.js"></script>
-		<script src="js/mail-script.js"></script>
-		<!--gmaps Js-->
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
-		<script src="js/gmaps.min.js"></script>
-		<script src="js/theme.js"></script>
-	</body>
+            </div>
+        </section>
+        <!--================End Home Banner Area =================-->
+      
+		<br>
+		
+		<div id = "keybindFormContainer">
+			<h1>Adjust Keybinds</h1>
+
+			<form>
+				<div class="row">
+				  <div class="col sm-1">
+					<input type="text" class="form-control" id="0" placeholder="">
+				  </div>
+				  <div class="col sm-1">
+					<input type="text" class="form-control" id="1" placeholder="">
+				  </div>
+				  <div class="col sm-1">
+					<input type="text" class="form-control" id="2" placeholder="">
+				  </div>
+				  <div class="col sm-1">
+					<input type="text" class="form-control" id="3" placeholder="">
+				  </div>
+				</div>
+				<button type="submit" id="submitKeybindsButton" class="btn btn-primary">Submit</button>
+			  </form>
+		</div>
+
+		<br>
+
+		<div id = "offsetFormContainer">
+			<h1>Adjust Offset</h1>
+			<p>Timing offset in ms:</p>
+
+			<form>
+				<div class="row">
+				  <div class="col sm-1">
+					<input type="text" id="offsetInput" class="form-control" id="0" placeholder="">
+				  </div>
+				</div>
+				<button type="submit" id="submitOffsetButton" class="btn btn-primary">Submit</button>
+			  </form>
+		</div>
+
+	</div>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/popper.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/stellar.js"></script>
+        <script src="vendors/lightbox/simpleLightbox.min.js"></script>
+        <script src="vendors/nice-select/js/jquery.nice-select.min.js"></script>
+        <script src="vendors/isotope/imagesloaded.pkgd.min.js"></script>
+        <script src="vendors/isotope/isotope-min.js"></script>
+        <script src="vendors/owl-carousel/owl.carousel.min.js"></script>
+        <script src="vendors/jquery-ui/jquery-ui.js"></script>
+        <script src="js/jquery.ajaxchimp.min.js"></script>
+        <script src="vendors/counter-up/jquery.waypoints.min.js"></script>
+        <script src="vendors/counter-up/jquery.counterup.js"></script>
+        <script src="js/mail-script.js"></script>
+        <script src="js/theme.js"></script>
+    </body>
 </html>
