@@ -1,31 +1,60 @@
 #noteContainer {
-    background-color: #063970;
+    background-image: linear-gradient(to top, #130219 , #38064c);
     height: 800px;
     z-index: 95;
   }
   
 .note {
     width: auto;
-    height: 60px;
+    height: 100px;
     z-index: 102;
-  }
+}
+
+.baseNote {
+  z-index: 101;
+  filter: grayscale(100%);
+  position: absolute;
+  top: 500px;
+}
+
+.baseNote1 {
+  left: 450px;
+  transform: rotate(180deg);
+}
+
+.baseNote2 {
+  left: 625px;
+  transform: rotate(135deg);
+}
+
+.baseNote3 {
+  left: 800px;
+  transform: rotate(45deg);
+}
+
+.baseNote4 {
+  left: 975px;
+}
   
 .leftNote {
     position: absolute;
     left: 450px;
-    top: 0px
+    top: 0px;
+    transform: rotate(180deg);
   }
   
 .leftMiddleNote {
     position: absolute;
     left: 625px;
     top: 0px;
+    transform: rotate(135deg);
   }
   
 .rightMiddleNote {
     position: absolute;
     left: 800px;
     top: 0px;
+    transform: rotate(45deg);
   }
   
 .rightNote {
@@ -34,7 +63,7 @@
     top: 0px;
   }
 
-#perfectZone {
+/* #perfectZone {
     position: absolute;
     background-color: green;
     height: 65px;
@@ -59,4 +88,4 @@
     width: 1200px;
     top: 465px;
     z-index: 99;
-}
+} */

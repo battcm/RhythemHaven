@@ -53,7 +53,7 @@ rhit.Game = class {
 
     // Begins the initial game loop. 
     begin() {
-        setInterval(this.runOneCycle.bind(this), 30);
+        setInterval(this.runOneCycle.bind(this), 20);
     }
 
     // Runs one cycle of the game which involves moving the notes and removing those that fall off the screen.
@@ -100,7 +100,7 @@ rhit.Game = class {
 // Creates a note giving it the classes note and noteType while also setting its height to height. 
 function createNoteElement (noteType, height) {
     let note = document.createElement('img');
-    note.src="img/Music_Note.png";
+    note.src="../img/Neon_Arrow.png";
     note.dataset.height = height;
     note.style=`top: ${height}px`;
     note.dataset.scored = "false";
