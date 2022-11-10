@@ -4,7 +4,11 @@ rhit.publicGame = null;
 
 rhit.Game = class {
     constructor() {
-        this.level = [[1,0,0,0,0,0,0,1,1,0,1,0,1,0], [0,1,0,0,0,0,1,0,1,0,0,1,0,1], [0,0,1,0,0,1,0,0,1,0,0,1,0,1], [0,0,0,1,1,0,0,0,1,0,1,0,1,0]]
+        this.level = [
+            [1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0], 
+            [0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1], 
+            [0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1], 
+            [0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1]]
         this.cycles = 0;
         this.score = 0;
         this.noteStreak = 0;
@@ -48,7 +52,9 @@ rhit.Game = class {
     updateScore(scoreIncrease) {
         this.score += scoreIncrease;
         document.querySelector("#score").innerHTML = `Score: ${this.score}`;
+        // document.querySelector("#score").innerHTML = `Score: ${this.score}`;
         document.querySelector("#noteStreak").innerHTML = `Hit Streak: ${this.noteStreak}`;
+
     }
 
     // Begins the initial game loop. 
@@ -140,6 +146,13 @@ function handleScoringNotes(noteType) {
     }
 }
 
+function handlePressed(press){
+    document.querySelector(".baseNote" + press).style = "filter: hue-rotate(40deg) grayscale(0%);"
+    setTimeout(() => {
+        document.querySelector(".baseNote" + press).style = "filter: grayscale(100%);"
+    }, 110)
+}
+
 rhit.main = function () {
 	console.log("Ready");
     rhit.publicGame = new rhit.Game();
@@ -150,15 +163,19 @@ rhit.main = function () {
         switch(event.key) {
             case "d":
                 handleScoringNotes(".leftNote");
+                handlePressed("1");
                 return;
             case "f":
                 handleScoringNotes(".leftMiddleNote");
+                handlePressed("2");
                 return;
             case "j":
                 handleScoringNotes(".rightMiddleNote");
+                handlePressed("3");
                 return;
             case "k":
                 handleScoringNotes(".rightNote");
+                handlePressed("4");
                 return;
             case "p":
                 rhit.publicGame.pause();
@@ -169,6 +186,8 @@ rhit.main = function () {
                 return;
         }
     })
+
+
 
     //
     document.querySelector("#pause").onclick = () => {

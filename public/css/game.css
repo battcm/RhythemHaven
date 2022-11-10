@@ -11,6 +11,8 @@
 }
 
 .baseNote {
+  width: auto;
+  height: 100px;
   z-index: 101;
   filter: grayscale(100%);
   position: absolute;
@@ -63,29 +65,18 @@
     top: 0px;
   }
 
-/* #perfectZone {
-    position: absolute;
-    background-color: green;
-    height: 65px;
-    width: 1200px;
-    top: 500px;
-    z-index: 101;
+/* #score {
+  position: absolute;
+  left: 100px;
+  top: 200px;
+  font-size: 2.5em;
+  color: #4d4dff;
 }
 
-#greatZone {
-    position: absolute;
-    background-color: yellow;
-    height: 95px;
-    width: 1200px;
-    top: 485px;
-    z-index: 100;
-}
-
-#goodZone {
-    position: absolute;
-    background-color: red;
-    height: 135px;
-    width: 1200px;
-    top: 465px;
-    z-index: 99;
+#noteStreak {
+  position: absolute;
+  left: 100px;
+  top: 300px;
+  font-size: 2.5em;
+  color: #4d4dff;
 } */
