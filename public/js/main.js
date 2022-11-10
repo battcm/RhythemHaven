@@ -1,5 +1,5 @@
-import {initializeApp} from 'firebase/app';
-import {getMessaging, getToken, onMessage} from 'firebase/messaging';
+//import {initializeApp} from 'firebase/app';
+//import {getMessaging, getToken, onMessage} from 'firebase/messaging';
 
 var rhythm = rhythm || {};
 rhythm.FbAuthManager = null;
@@ -19,8 +19,8 @@ rhythm.FB_KEY_OFFSET = "offset";
 
 rhythm.userStatsManager = null;
 rhythm.settingsManager = null;
-const firebase = require('firebase');
-require('firebase/firestore');
+//const firebase = require('firebase');
+//require('firebase/firestore');
 //user = currently signed in user
 
 
@@ -33,11 +33,12 @@ function htmlToElement(html) {
    }
 
 rhythm.main = function () {
-	rhythm.UserStatsManager = new rhythm.UserStatsManager();
-	const app = initializeApp(firebaseConfig);
-	const db = getFirestore(app);
+	rhythm.userStatsManager = new rhythm.UserStatsManager();
+	//const app = initializeApp(firebaseConfig);
+	//const db = getFirestore(app);
+	var uid = null;
 
-	firebase.initializeApp();
+	//firebase.initializeApp();
 
 	
     firebase.auth().onAuthStateChanged((user) => {
@@ -47,7 +48,7 @@ rhythm.main = function () {
 		  var phoneNumber = user.phoneNumber;
 		  var photoURL = user.photoURL;
 		  var isAnonymous = user.isAnonymous;
-		  var uid = user.uid;
+		  uid = user.uid;
 		  var providerData = user.providerData;
 		  rhythm.settingsManager = new rhythm.SettingsManager(uid);
 		  // ...
@@ -65,7 +66,7 @@ rhythm.main = function () {
 		}
 	  });
 
-	rhythm.initializePage(user.uid);
+	rhythm.initializePage(uid);
 }
 
 rhythm.initializePage = function (signedInUserUid) {
@@ -78,20 +79,18 @@ rhythm.initializePage = function (signedInUserUid) {
 	}
 
 	if(document.querySelector("#signOutPage")) {
-		if(user){
+
 		console.log(`sign out`);
 		firebase.auth().signOut().then(() => {
 			// Sign-out successful.
 			console.log("You are now signed out");
+			window.location.replace("/log-in.html");
 		  }).catch((error) => {
 			// An error happened.
 			console.log("sign out error");
-		  });
-		}
-		//no user signed in
-		else {
 			window.location.replace("/log-in.html");
-		}
+		  });
+
 	}
 
 	if(document.querySelector("#globalLeaderboard")) {
@@ -122,14 +121,18 @@ rhythm.LoginPageController = class {
 	constructor() {
 	const inputEmailEl = document.querySelector("#inputEmail");
 	const inputPasswordEl = document.querySelector("#inputPassword");
+	//const user = null;
 
     document.querySelector("#signUpButton").onclick = (event) => {
 		console.log(`Create account for Email: ${inputEmailEl.value} Password: ${inputPasswordEl.value}`)
-		
+		event.preventDefault();
 		firebase.auth().createUserWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value)
 		.then((userCredential) => {
 		  // Signed in 
 		  var user = userCredential.user;
+		  console.log(user);
+		  //initializes stats
+		  //rhythm.userStatsManager.add(user.uid,0,0,0,0,0,0,0,0);
 		  // ...
 		})
 		.catch((error) => {
@@ -138,8 +141,6 @@ rhythm.LoginPageController = class {
 		  console.log("Create Account error", errorCode, errorMessage);
 		  // ..
 		});
-
-
 
 	}
 
@@ -258,9 +259,16 @@ rhythm.UserStatsManager = class {
 	getUserByUid(uid) {
 		const db = firebase.firestore().collection(rhythm.FB_COLLECTION_USERSTATS);
 		
-		const docRef = doc(db, FB_COLLECTION_USERSTATS, uid);
-        //const docSnap = await getDoc(docRef);
+		//const docRef = doc(db, FB_COLLECTION_USERSTATS, uid);
+        //const docSnapshot = getDoc(docRef);
+		
 
+		for (doc of this._documentSnapshots) {
+			if(doc.id == uid){
+				docSnapshot = doc;
+				break;
+			}
+		}
 		
 		const userByUid = new rhythm.User(
 			docSnapshot.id,
@@ -365,7 +373,7 @@ rhythm.SettingsPageController = class {
 	constructor(){
 		//no user signed in, then redirect
 		if(rhythm.settingsManager == null){
-			window.location.href = "/log-in.html";
+			//window.location.href = "/log-in.html";
 		}
 
 		document.querySelector("#submitKeybindsButton").addEventListener("click", (event) => {
@@ -377,14 +385,13 @@ rhythm.SettingsPageController = class {
 			
 		rhythm.settingsManager.updateKeybinds(binds[0],binds[1],binds[2],binds[3]);
 		this.updateView();
-		}
+		});
 
 		document.querySelector("#submitOffsetButton").addEventListener("click", (event) => {
-
-		let offset = getElementById(`offsetInput`).value.parseInt();
+		let offset = getElementById('offsetInput').value.parseInt();
 		rhythm.settingsManager.updateOffset(offset);
 		this.updateView();
-		}	
+		});	
 	}
 
 	updateView(){
@@ -466,7 +473,7 @@ rhythm.GlobalLeaderboardController = class {
 
 rhythm.StatsPageController = class {
 	constructor(pageUserUid) {
-		this.pageUserObject = getUserByUid(pageUserUid);
+		this.pageUserObject = rhythm.userStatsManager.getUserByUid(pageUserUid);
 		rhythm.userStatsManager.beginListening(this.updateView.bind(this));
 	}
 
