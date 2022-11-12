@@ -568,12 +568,15 @@ img {
   max-width: 1620px;
   margin: auto; }
 
+#songBannerArea{
+  height: 100vh;
+}
 .banner_area {
   position: relative;
   min-height: 430px;
   z-index: 1;
   background: url(../img/banner/home-banner.jpg) no-repeat center center;
-  background-size: cover; }
+  background-size: cover;}
   .banner_area .banner_inner {
     position: relative;
     overflow: hidden;
@@ -597,7 +600,7 @@ img {
         margin-right: 32px;
         position: relative; }
         .banner_area .banner_inner .banner_content .page_link a:before {
-          content: "\e87a";
+          /* content: "\e87a"; */
           font-family: 'Linearicons-Free';
           font-size: 14px;
           position: absolute;

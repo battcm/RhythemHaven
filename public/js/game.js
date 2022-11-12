@@ -17,10 +17,8 @@ rhit.Game = class {
         this.perfectNotes = 0;
         this.greatNotes = 0;
         this.goodNotes = 0;
-        console.log(this.cycles);
-        this.noteContainer = document.querySelector("#noteContainer");
         this.initializeNotes();
-        this.begin();
+        const interval = setInterval(this.runOneCycle.bind(this), 20);
     }
 
     // Spawns all the notes in at the beginning of the game before any frames occur.
@@ -50,16 +48,23 @@ rhit.Game = class {
 
     // Adds the given score to the current score and updates the scoreboard accordingly. 
     updateScore(scoreIncrease) {
-        this.score += scoreIncrease;
+        this.score += (scoreIncrease * this.generateScoreMultiplier());
         document.querySelector("#score").innerHTML = `Score: ${this.score}`;
-        // document.querySelector("#score").innerHTML = `Score: ${this.score}`;
-        document.querySelector("#noteStreak").innerHTML = `Hit Streak: ${this.noteStreak}`;
-
+        document.querySelector("#noteStreak").innerHTML = `Note Streak: ${this.noteStreak}`;
+        document.querySelector("#scoreMultiplier").innerHTML = `Score Multiplier: ${this.generateScoreMultiplier()}`;
     }
 
-    // Begins the initial game loop. 
-    begin() {
-        setInterval(this.runOneCycle.bind(this), 20);
+    // Generates a score multiplier based on the current note streak
+    generateScoreMultiplier() {
+        if (this.noteStreak >= 100) {
+            return 5;
+        } else if (this.noteStreak >= 50) {
+            return 3;
+        } else if (this.noteStreak >= 10) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
 
     // Runs one cycle of the game which involves moving the notes and removing those that fall off the screen.
@@ -76,7 +81,7 @@ rhit.Game = class {
                     this.noteStreak = 0;
                     this.updateScore(0);
                 }
-                if (y >= 700) {
+                if (y >= 635) {
                     note.remove();
                 }
             })
@@ -92,6 +97,19 @@ rhit.Game = class {
     // Pauses the game. 
     pause() {
         this.isPaused = !this.isPaused;
+        if (this.isPaused) {
+            document.querySelector("#beatIt").pause();
+            document.querySelector("#restart").hidden = false;
+            document.querySelector("#mainMenu").hidden = false;
+        } else {
+            document.querySelector("#beatIt").play();
+            document.querySelector("#restart").hidden = true; 
+            document.querySelector("#mainMenu").hidden = true;          
+        }
+    }
+
+    endGame() {
+        clearInterval(this.interval);
     }
 
     postToLeaderboard() {
@@ -106,7 +124,7 @@ rhit.Game = class {
 // Creates a note giving it the classes note and noteType while also setting its height to height. 
 function createNoteElement (noteType, height) {
     let note = document.createElement('img');
-    note.src="../img/Neon_Arrow.png";
+    note.src="img/Neon_Arrow.png";
     note.dataset.height = height;
     note.style=`top: ${height}px`;
     note.dataset.scored = "false";
@@ -155,7 +173,6 @@ function handlePressed(press){
 
 rhit.main = function () {
 	console.log("Ready");
-    rhit.publicGame = new rhit.Game();
 
     // initialized the keyboard event listener to call handleScoringNotes
     document.addEventListener("keydown", (event) => {
@@ -187,12 +204,25 @@ rhit.main = function () {
         }
     })
 
-
-
-    //
     document.querySelector("#pause").onclick = () => {
         rhit.publicGame.pause();
     }
+
+    document.querySelector("#restart").onclick = () => {
+        location.reload();
+    }
+
+    document.querySelector("#mainMenu").onclick = () => {
+        location.replace("http://localhost:5000/index.html"); // Needs to be changed when deployed
+    }
+
+    document.querySelector("#begin").onclick = () => {
+        rhit.publicGame = new rhit.Game();
+        document.querySelector("#beatIt").play();
+        document.querySelector("#begin").hidden = true;
+        document.querySelector("#pause").hidden = false;
+    }
+
 };
 
 rhit.main();
