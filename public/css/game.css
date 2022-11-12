@@ -2,8 +2,8 @@
     background-image: linear-gradient(to top, #130219 , #38064c);
     height: 800px;
     z-index: 95;
-  }
-  
+}
+ 
 .note {
     width: auto;
     height: 100px;
@@ -65,7 +65,7 @@
     top: 0px;
   }
 
-/* #score {
+/* .score {
   position: absolute;
   left: 100px;
   top: 200px;
@@ -73,7 +73,7 @@
   color: #4d4dff;
 }
 
-#noteStreak {
+.noteStreak {
   position: absolute;
   left: 100px;
   top: 300px;

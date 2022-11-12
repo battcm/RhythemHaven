@@ -17,10 +17,8 @@ rhit.Game = class {
         this.perfectNotes = 0;
         this.greatNotes = 0;
         this.goodNotes = 0;
-        console.log(this.cycles);
-        this.noteContainer = document.querySelector("#noteContainer");
         this.initializeNotes();
-        this.begin();
+        const interval = setInterval(this.runOneCycle.bind(this), 20);
     }
 
     // Spawns all the notes in at the beginning of the game before any frames occur.
@@ -50,16 +48,23 @@ rhit.Game = class {
 
     // Adds the given score to the current score and updates the scoreboard accordingly. 
     updateScore(scoreIncrease) {
-        this.score += scoreIncrease;
+        this.score += (scoreIncrease * this.generateScoreMultiplier());
         document.querySelector("#score").innerHTML = `Score: ${this.score}`;
-        // document.querySelector("#score").innerHTML = `Score: ${this.score}`;
-        document.querySelector("#noteStreak").innerHTML = `Hit Streak: ${this.noteStreak}`;
-
+        document.querySelector("#noteStreak").innerHTML = `Note Streak: ${this.noteStreak}`;
+        document.querySelector("#scoreMultiplier").innerHTML = `Score Multiplier: ${this.generateScoreMultiplier()}`;
     }
 
-    // Begins the initial game loop. 
-    begin() {
-        setInterval(this.runOneCycle.bind(this), 20);
+    // Generates a score multiplier based on the current note streak
+    generateScoreMultiplier() {
+        if (this.noteStreak >= 100) {
+            return 5;
+        } else if (this.noteStreak >= 50) {
+            return 3;
+        } else if (this.noteStreak >= 10) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
 
     // Runs one cycle of the game which involves moving the notes and removing those that fall off the screen.
@@ -92,6 +97,15 @@ rhit.Game = class {
     // Pauses the game. 
     pause() {
         this.isPaused = !this.isPaused;
+        if (this.isPaused) {
+            document.querySelector("#restart").hidden = false;
+        } else {
+            document.querySelector("#restart").hidden = true;           
+        }
+    }
+
+    endGame() {
+        clearInterval(this.interval);
     }
 
     postToLeaderboard() {
@@ -187,12 +201,14 @@ rhit.main = function () {
         }
     })
 
-
-
-    //
     document.querySelector("#pause").onclick = () => {
         rhit.publicGame.pause();
     }
+
+    document.querySelector("#restart").onclick = () => {
+        location.reload();
+    }
+
 };
 
 rhit.main();
