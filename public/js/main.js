@@ -38,7 +38,6 @@ rhythm.main = function () {
 	rhythm.userStatsManager = new rhythm.UserStatsManager();
 	//const app = initializeApp(firebaseConfig);
 	//const db = getFirestore(app);
-	var uid = null;
 
 	//firebase.initializeApp();
 
@@ -52,31 +51,37 @@ rhythm.main = function () {
 		  var phoneNumber = user.phoneNumber;
 		  var photoURL = user.photoURL;
 		  var isAnonymous = user.isAnonymous;
-		  uid = user.uid;
+		  window.signedInUser = user.uid;
+		  console.log("set uid to "+window.signedInUser);
 		  var providerData = user.providerData;
-		  rhythm.settingsManager = new rhythm.SettingsManager(uid);
+		  rhythm.settingsManager = new rhythm.SettingsManager(window.signedInUser);
 		  // ...
-		  console.log("The user is signd in " , uid);
+		  console.log("The user is signd in " , window.signedInUser);
 		  console.log('displayName :>> ', displayName);
 		  console.log('email :>> ', email);
 		  console.log('photoURL :>> ', photoURL);
 		  console.log('phoneNumber :>> ', phoneNumber);
 		  console.log('isAnonymous :>> ', isAnonymous);
-		  console.log('uid :>> ', uid);
+		  console.log('uid :>> ', window.signedInUser);
 		} else {
 		  // User is signed out
 		  // ...
 		  console.log("There is no user signed in");
 		}
 	  })
+	  
+	setTimeout(console.log,600,("uid after auth: "+window.signedInUser));
 
 	//make sure auth stuff finishes before initializepage is called
-	setTimeout(rhythm.initializePage,600,uid);
+	
+	setTimeout(rhythm.initializePage,600,window.signedInUser);
+	console.log("called initializepage. uid is ..."+window.signedInUser);
 	//rhythm.initializePage(uid);
 }
 
 rhythm.initializePage = function (signedInUserUid) {
 	const urlParams = new URLSearchParams(window.location.search);
+	console.log("signedInUserUid): "+ signedInUserUid);
 
 	if(document.querySelector("#loginPage")) {
 		console.log("on login page");
@@ -120,6 +125,7 @@ rhythm.initializePage = function (signedInUserUid) {
 		if(urlParams.get("id") == "me"){
 			user = signedInUserUid;
 			signedIn = true;
+			console.log('id is me. user is..'+signedInUserUid);
 		}
 		else{
 			user = urlParams.get("id");
@@ -146,13 +152,15 @@ rhythm.LoginPageController = class {
 		  var user = userCredential.user;
 		  console.log(user);
 		  //initializes stats
-		  rhythm.userStatsManager.add(user.uid,0,0,0,0,0,0,0,0);
+		  rhythm.userStatsManager.add(user.uid,0,0,0,0,0,0,0,0,0);
 		  // ...
+		  document.getElementById("errorText").innerHTML = `Welcome to Rhythm Haven, user +${user.uid}`;
 		})
 		.catch((error) => {
 		  var errorCode = error.code;
 		  var errorMessage = error.message;
 		  console.log("Create Account error", errorCode, errorMessage);
+		  document.getElementById("errorText").innerHTML = errorMessage;
 		  // ..
 		});
 
@@ -163,9 +171,11 @@ rhythm.LoginPageController = class {
 		firebase.auth().signOut().then(() => {
 			// Sign-out successful.
 			console.log("You are now signed out");
+			document.getElementById("errorText").innerHTML = `You are now signed out.`;
 		  }).catch((error) => {
 			// An error happened.
 			console.log("sign out error");
+			document.getElementById("errorText").innerHTML = `Sign out error ):`;
 		  });
     }
 
@@ -176,12 +186,16 @@ rhythm.LoginPageController = class {
 		.then((userCredential) => {
 		  // Signed in
 		  var user = userCredential.user;
+		  document.getElementById("errorText").innerHTML = `Welcome back, user +${user.uid}`;
+
 		  // ...
 		})
 		.catch((error) => {
 		  var errorCode = error.code;
 		  var errorMessage = error.message;
 		  console.log("Create Account error", errorCode, errorMessage);
+		  document.getElementById("errorText").innerHTML = `Create account error: +${errorMessage}`;
+		  console.log(document.getElementById("errorText").innerHTML);
 		});
 	}
 	}
@@ -218,7 +232,7 @@ rhythm.UserStatsManager = class {
 		//this.beginListening(this.getUserByUid.bind(this));
 	}
 
-	add(uid,accuracy,hoursSpent,totalScore,totalNotes,ok,good,perfect,great) {
+	add(uid,accuracy,hoursSpent,totalScore,totalNotes,songsPlayed,ok,good,perfect,great) {
 		console.log("creating new user entry with uid: ");
 		console.log(uid);
 		this._ref.doc(uid).set({
@@ -226,6 +240,7 @@ rhythm.UserStatsManager = class {
 			[rhythm.FB_KEY_ACCURACY]:accuracy,
 			[rhythm.FB_KEY_HOURS_SPENT]: hoursSpent,
 			[rhythm.FB_KEY_TOTAL_NOTES]: totalNotes,
+			[rhythm.FB_KEY_SONGS_PLAYED]: songsPlayed,
 			[rhythm.FB_KEY_OK]: ok,
 			[rhythm.FB_KEY_GOOD]: good,
 			[rhythm.FB_KEY_GREAT]: great,
