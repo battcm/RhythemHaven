@@ -1,6 +1,6 @@
 #noteContainer {
     background-image: linear-gradient(to top, #130219 , #38064c);
-    height: 800px;
+    height: 100vh;
     z-index: 95;
 }
  

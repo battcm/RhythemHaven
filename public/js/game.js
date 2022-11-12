@@ -81,7 +81,7 @@ rhit.Game = class {
                     this.noteStreak = 0;
                     this.updateScore(0);
                 }
-                if (y >= 700) {
+                if (y >= 635) {
                     note.remove();
                 }
             })
