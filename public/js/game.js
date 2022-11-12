@@ -98,11 +98,13 @@ rhit.Game = class {
     pause() {
         this.isPaused = !this.isPaused;
         if (this.isPaused) {
+            document.querySelector("#beatIt").pause();
             document.querySelector("#restart").hidden = false;
             document.querySelector("#mainMenu").hidden = false;
         } else {
+            document.querySelector("#beatIt").play();
             document.querySelector("#restart").hidden = true; 
-            document.querySelector("#mainMenu").hidden = false;          
+            document.querySelector("#mainMenu").hidden = true;          
         }
     }
 
@@ -171,7 +173,6 @@ function handlePressed(press){
 
 rhit.main = function () {
 	console.log("Ready");
-    rhit.publicGame = new rhit.Game();
 
     // initialized the keyboard event listener to call handleScoringNotes
     document.addEventListener("keydown", (event) => {
@@ -213,6 +214,13 @@ rhit.main = function () {
 
     document.querySelector("#mainMenu").onclick = () => {
         location.replace("http://localhost:5000/index.html"); // Needs to be changed when deployed
+    }
+
+    document.querySelector("#begin").onclick = () => {
+        rhit.publicGame = new rhit.Game();
+        document.querySelector("#beatIt").play();
+        document.querySelector("#begin").hidden = true;
+        document.querySelector("#pause").hidden = false;
     }
 
 };
