@@ -14,7 +14,7 @@ rhythm.FB_KEY_OK = "ok";
 rhythm.FB_KEY_GOOD = "good";
 rhythm.FB_KEY_PERFECT = "perfect";
 rhythm.FB_KEY_GREAT = "great";
-rhythm.FB_KEY_KEYBINDS = ["keyBind0","keyBind1","keyBind2","keyBind3"]
+rhythm.FB_KEY_KEYBINDS = ["keyBind0","keyBind1","keyBind2","keyBind3"];
 rhythm.FB_KEY_OFFSET = "offset";
 
 rhythm.userStatsManager = null;
