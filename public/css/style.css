@@ -597,7 +597,7 @@ img {
         margin-right: 32px;
         position: relative; }
         .banner_area .banner_inner .banner_content .page_link a:before {
-          content: "\e87a";
+          /* content: "\e87a"; */
           font-family: 'Linearicons-Free';
           font-size: 14px;
           position: absolute;

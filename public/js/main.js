@@ -102,6 +102,7 @@ rhythm.initializePage = function (signedInUserUid) {
 	if(document.querySelector("#settingsPage")) {
 		rhythm.settingsPageController = new rhythm.SettingsPageController();
 		settingsPageController.updateView();
+		console.log(settingsPageController.getKeybinds()); // added
 	}
 
 	if(document.querySelector("#statsPage")) {

@@ -99,8 +99,10 @@ rhit.Game = class {
         this.isPaused = !this.isPaused;
         if (this.isPaused) {
             document.querySelector("#restart").hidden = false;
+            document.querySelector("#mainMenu").hidden = false;
         } else {
-            document.querySelector("#restart").hidden = true;           
+            document.querySelector("#restart").hidden = true; 
+            document.querySelector("#mainMenu").hidden = false;          
         }
     }
 
@@ -120,7 +122,7 @@ rhit.Game = class {
 // Creates a note giving it the classes note and noteType while also setting its height to height. 
 function createNoteElement (noteType, height) {
     let note = document.createElement('img');
-    note.src="../img/Neon_Arrow.png";
+    note.src="img/Neon_Arrow.png";
     note.dataset.height = height;
     note.style=`top: ${height}px`;
     note.dataset.scored = "false";
@@ -207,6 +209,10 @@ rhit.main = function () {
 
     document.querySelector("#restart").onclick = () => {
         location.reload();
+    }
+
+    document.querySelector("#mainMenu").onclick = () => {
+        location.replace("http://localhost:5000/index.html"); // Needs to be changed when deployed
     }
 
 };
