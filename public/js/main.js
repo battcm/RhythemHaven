@@ -364,6 +364,7 @@ rhythm.SettingsManager = class {
 		}
 
 	updateKeybinds(a,b,c,d){
+		console.log("updating keybinds!");
 		this._ref.update({
 			[rhythm.FB_KEY_KEYBINDS[0]]: a,
 			[rhythm.FB_KEY_KEYBINDS[1]]: b,
@@ -372,6 +373,10 @@ rhythm.SettingsManager = class {
 		})
 		.then(() => {
 			console.log("Document successfully updated!");
+			console.log(rhythm.FB_KEY_KEYBINDS[0]);
+			console.log(rhythm.FB_KEY_KEYBINDS[1]);
+			console.log(rhythm.FB_KEY_KEYBINDS[2]);
+			console.log(rhythm.FB_KEY_KEYBINDS[3]);
 		})
 		.catch(function(error) {
 			console.error("Error updating document: ", error);
@@ -387,6 +392,7 @@ rhythm.SettingsManager = class {
 	}
 
 	updateOffset(offset){
+		console.log("updating offset!");
 		this._ref.update({
 			[rhythm.FB_KEY_OFFSET]: offset
 		})
@@ -396,6 +402,7 @@ rhythm.SettingsManager = class {
 		.catch(function(error) {
 			console.error("Error updating document: ", error);
 		});
+		console.log(`new offset: ${this._documentSnapshot.get(rhythm.FB_KEY_OFFSET)}`);
 	}
 
 	offset(){
@@ -415,7 +422,7 @@ rhythm.SettingsPageController = class {
 		document.querySelector("#submitKeybindsButton").addEventListener("click", (event) => {
 		let binds = ["0","0","0","0"];
 
-			for(let i=0;i<3;i++){
+			for(let i=0;i<=3;i++){
 				binds[i] = document.getElementById(`${i}`).value;
 			}
 		
