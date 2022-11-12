@@ -42,6 +42,8 @@ rhythm.main = function () {
 
 	//firebase.initializeApp();
 
+	console.log("checking auth...")
+
 	
     firebase.auth().onAuthStateChanged((user) => {
 		if (user) {
@@ -66,9 +68,11 @@ rhythm.main = function () {
 		  // ...
 		  console.log("There is no user signed in");
 		}
-	  });
+	  })
 
-	rhythm.initializePage(uid);
+	//make sure auth stuff finishes before initializepage is called
+	setTimeout(rhythm.initializePage,600,uid);
+	//rhythm.initializePage(uid);
 }
 
 rhythm.initializePage = function (signedInUserUid) {
@@ -104,7 +108,7 @@ rhythm.initializePage = function (signedInUserUid) {
 	if(document.querySelector("#settingsPage")) {
 		const settingsPageController = new rhythm.SettingsPageController();
 		settingsPageController.updateView();
-		console.log(settingsPageController.getKeybinds()); // added
+		//console.log(settingsPageController.getKeybinds()); // added
 	}
 
 	if(document.querySelector("#statsPage")) {
@@ -375,10 +379,10 @@ rhythm.SettingsManager = class {
 	}
 
 	getKeybinds(){
-		return [this._documentSnapshot.get(rhythm.FB_KEY_KEYBINDS[0]),
-		this._documentSnapshot.get(rhythm.FB_KEY_KEYBINDS[1]),
-		this._documentSnapshot.get(rhythm.FB_KEY_KEYBINDS[2]),
-		this._documentSnapshot.get(rhythm.FB_KEY_KEYBINDS[3])
+		console.log("getting keybinds");
+		console.log(this._documentSnapshot.data());
+		return [this._documentSnapshot.data().keyBind0,this._documentSnapshot.data().keyBind1,
+			this._documentSnapshot.data().keyBind2,this._documentSnapshot.data().keyBind3
 		];
 	}
 
@@ -394,7 +398,7 @@ rhythm.SettingsManager = class {
 		});
 	}
 
-	get offset(){
+	offset(){
 		return this._documentSnapshot.get(rhythm.FB_KEY_OFFSET);
 	}
 
@@ -406,34 +410,22 @@ rhythm.SettingsPageController = class {
 	constructor(){
 		console.log('settings page controller loaded!')
 
-		firebase.auth().onAuthStateChanged((user) => {
-			if (user) {
-				// User is signed in
-				console.log("User Signed In");
-				var uid = user.uid;
-				rhythm.settingsManager = new rhythm.SettingsManager(uid);
-			} else {
-				// User is signed out
-				window.location.href = "/log-in.html";
-				
-			}
-		});
-
-
+		rhythm.settingsManager.beginListening(this.updateView.bind(this));
 
 		document.querySelector("#submitKeybindsButton").addEventListener("click", (event) => {
-		let binds = [0,0,0,0];
+		let binds = ["0","0","0","0"];
 
 			for(let i=0;i<3;i++){
-				binds[i] = getElementById(`${i}`).value;
+				binds[i] = document.getElementById(`${i}`).value;
 			}
-			
+		
+		console.log(`submitting binds: ${binds}`);
 		rhythm.settingsManager.updateKeybinds(binds[0],binds[1],binds[2],binds[3]);
 		this.updateView();
 		});
 
 		document.querySelector("#submitOffsetButton").addEventListener("click", (event) => {
-		let offset = getElementById('offsetInput').value.parseInt();
+		let offset = document.getElementById('offsetInput').value.parseInt();
 		rhythm.settingsManager.updateOffset(offset);
 		this.updateView();
 		});	
@@ -442,13 +434,14 @@ rhythm.SettingsPageController = class {
 	updateView(){
 		//show current keybinds
 		let keybinds = rhythm.settingsManager.getKeybinds();
-		for(let i = 0;i<3;i++){
-			getElementById(`${i}`).style.placeholder = keybinds[i];
+		console.log(`keybinds: +${keybinds}`);
+		for(let i = 0;i<=3;i++){
+			document.getElementById(`${i}`).setAttribute("placeholder",`${keybinds[i]}`);
 		}
 
 		//show current offset
 		let offset = rhythm.settingsManager.offset();
-		getElementById("offsetInput").style.placeholder = offset;
+		document.getElementById("offsetInput").setAttribute("placeholder",`${offset}`);
 	}
 
 }
@@ -537,7 +530,7 @@ rhythm.StatsPageController = class {
 			//if signed in user = the specified uid, set the title to my stats
 			if(this.signedIn){
 				console.log("signed in");
-				title.innerHtml = 
+				title.innerHTML = 
 				`
 				<h2>My Stats</h2>
 				<h1>My Stats</h1>
@@ -545,7 +538,7 @@ rhythm.StatsPageController = class {
 			}
 			else{
 				console.log("not signed in");
-				title.innerHtml = 
+				title.innerHTML = 
 				`
 				<h2>${this.pageUserObject.uid}'s Stats</h2>
 				<h1>${this.pageUserObject.uid}'s Stats</h1>
@@ -554,16 +547,18 @@ rhythm.StatsPageController = class {
 		
 			//updates all the stats
 			console.log("updating stats!");
-			document.getElementById("songsPlayedText").innerHtml = this.pageUserObject.songsPlayed;
+			document.getElementById("songsPlayedText").innerHTML = this.pageUserObject.songsPlayed;
 			console.log(this.pageUserObject.totalScore);
-			document.getElementById("totalScoreText").innerHtml = this.pageUserObject.totalScore;
-			document.getElementById("accuracyText").innerHtml = `${this.pageUserObject.accuracy}%`;
-			document.getElementById("hoursSpentText").innerHtml = this.pageUserObject.hoursSpent;
-			document.getElementById("totalHitsText").innerHtml = this.pageUserObject.totalNotes;
-			document.getElementById("perfectText").innerHtml = this.pageUserObject.perfect;
-			document.getElementById("greatText").innerHtml = this.pageUserObject.great;
-			document.getElementById("goodText").innerHtml = this.pageUserObject.good;
-			document.getElementById("okText").innerHtml = this.pageUserObject.ok;
+			console.log(this.pageUserObject.totalNotes);
+			console.log(document.getElementById("songsPlayedText"));
+			document.getElementById("totalScoreText").innerHTML = this.pageUserObject.totalScore;
+			document.getElementById("accuracyText").innerHTML = `${this.pageUserObject.accuracy}%`;
+			document.getElementById("hoursSpentText").innerHTML = this.pageUserObject.hoursSpent;
+			document.getElementById("totalHitsText").innerHTML = this.pageUserObject.totalNotes;
+			document.getElementById("perfectText").innerHTML = this.pageUserObject.perfect;
+			document.getElementById("greatText").innerHTML = this.pageUserObject.great;
+			document.getElementById("goodText").innerHTML = this.pageUserObject.good;
+			document.getElementById("okText").innerHTML = this.pageUserObject.ok;
 
 
 	}
