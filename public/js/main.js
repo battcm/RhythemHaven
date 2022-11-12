@@ -219,7 +219,9 @@ rhythm.UserStatsManager = class {
 	}
 
 	add(uid,accuracy,hoursSpent,totalScore,totalNotes,ok,good,perfect,great) {
-		this._ref.add({
+		console.log("creating new user entry with uid: ");
+		console.log(uid);
+		this._ref.doc(uid).set({
 			[rhythm.FB_KEY_TOTAL_SCORE]: totalScore,
 			[rhythm.FB_KEY_ACCURACY]:accuracy,
 			[rhythm.FB_KEY_HOURS_SPENT]: hoursSpent,
@@ -240,7 +242,9 @@ rhythm.UserStatsManager = class {
 		.catch(function (error) {
 			console.error("Error adding document: ", error);
 		})
-		docRef.id = uid;
+		//console.log("UID: "+uid);
+		//docRef.id = uid;
+		//console.log("UID: "+docRef.id);
 	}
 
 	beginListening(changeListener) {
@@ -345,6 +349,7 @@ rhythm.SettingsManager = class {
 		this._unsubscribe = null;
 		this._ref = firebase.firestore().collection(rhythm.FB_COLLECTION_USERSTATS).doc(signedInUserUid);
 		console.log("settings manager created!");
+
 	}
 
 	beginListening(changeListener) {
