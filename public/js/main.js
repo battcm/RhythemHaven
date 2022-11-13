@@ -17,6 +17,7 @@ rhythm.FB_KEY_GREAT = "great";
 rhythm.FB_KEY_KEYBINDS = ["keyBind0","keyBind1","keyBind2","keyBind3"];
 rhythm.FB_KEY_OFFSET = "offset";
 
+rhythm.validUser = false;
 rhythm.userStatsManager = null;
 rhythm.settingsManager = null;
 //let settingsManager = null;
@@ -48,6 +49,7 @@ rhythm.main = function () {
 		  console.log("set uid to "+window.signedInUser);
 		  var providerData = user.providerData;
 		  rhythm.settingsManager = new rhythm.SettingsManager(window.signedInUser);
+		  rhythm.validUser = true;
 		  // ...
 		  console.log("The user is signd in " , window.signedInUser);
 		  console.log('displayName :>> ', displayName);
@@ -62,6 +64,7 @@ rhythm.main = function () {
 		  // User is signed out
 		  // ...
 		  console.log("There is no user signed in");
+		  rhythm.validUser = false;
 		   //make sure auth stuff finishes before initializepage is called
 		   setTimeout(rhythm.initializePage,600,null);
 		}
@@ -711,7 +714,7 @@ rhythm.Game = class {
                     note.remove();
                 }
             })
-            if (this.cycles == this.totalCycles) {
+            if (rhythm.validUser && this.cycles == this.totalCycles) {
                 console.log("Final Total Notes", this.totalNotes);
                 console.log("Final Perfect Notes", this.perfectNotes);
                 console.log("Final Great Notes", this.greatNotes);
@@ -844,8 +847,11 @@ rhythm.GamePageController = class {
 
 		document.querySelector("#begin").onclick = () => {
 			this.publicGame = new rhythm.Game();
-			rhythm.settingsManager.beginListening(this.initializeKeyBinds.bind(this));
-			setTimeout(rhythm.settingsManager.stopListening, 2000);
+			if (rhythm.validUser) {
+				rhythm.settingsManager.beginListening(this.initializeKeyBinds.bind(this));
+			} else {
+				this.initializeKeyBinds();
+			}
 			document.querySelector("#beatIt").play();
 			document.querySelector("#begin").hidden = true;
 			document.querySelector("#pause").hidden = false;
@@ -856,8 +862,12 @@ rhythm.GamePageController = class {
 
 	// initialized the keyboard event listener to call handleScoringNotes
 	initializeKeyBinds() {
-		let keybinds = rhythm.settingsManager.getKeybinds();
-		console.log("Key Binds: ", keybinds);
+		let keybinds = ["d", "f", "j", "k"];
+		console.log("valid user: ", rhythm.validUser);
+		if (rhythm.validUser) {
+			let keybinds = rhythm.settingsManager.getKeybinds();
+			console.log("Key Binds: ", keybinds);
+		}
 		document.addEventListener("keydown", (event) => {
 			if (this.publicGame) {
 				switch(event.key) {
