@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="vendors/linericon/style.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="vendors/owl-carousel/owl.carousel.min.css">
-        <link rel="stylesheet" href="vendors/lightbox/simpleLightbox.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
         <link rel="stylesheet" href="vendors/nice-select/css/nice-select.css">
         <link rel="stylesheet" href="vendors/animate-css/animate.css">
         <!-- main css -->
@@ -19,10 +19,9 @@
         <link rel="stylesheet" href="css/responsive.css">
     </head>
     <body>
-		<div id="settingsPage">
         
-	<!--================Header Menu Area =================-->
-	<header class="header_area">
+ 	<!--================Header Menu Area =================-->
+     <header class="header_area">
 		<div class="main_menu">
 			<nav class="navbar navbar-expand-lg navbar-light">
 				<div class="container">
@@ -45,8 +44,8 @@
 									<li class="nav-item"><a class="nav-link" href="stats.html?id=me">Personal Stats</a>
 									<li class="nav-item"><a class="nav-link" href="log-in.html">Log In/Register</a>
 									<li class="nav-item"><a class="nav-link" href="log-out.html">Log Out</a>
-									<li class="nav-item"><a class="nav-link" href="delete-accout.html">Delete Account</a>
-									</ul>
+                                    <li class="nav-item"><a class="nav-link" href="delete-accout.html">Delete Account</a>
+								</ul>
 							</li>
 							
 							<li class="nav-item submenu dropdown">
@@ -76,90 +75,65 @@
 	<!--================Header Menu Area =================-->
         
         <!--================Home Banner Area =================-->
+        <div id="deleteAccountPage">
         <section class="banner_area">
             <div class="banner_inner d-flex align-items-center">
             	<div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
 				<div class="container">
 					<div class="banner_content text-center">
 						<div class="page_link">
-							<a href="index.html">Settings</a>
-							<a href="elements.html">Gameplay</a>
+							<a href="index.html">Account</a>
+							<a href="contact.html">Log Out</a>
 						</div>
-						<h2>Settings</h2>
+						<h2>Delete Account</h2>
+						
 					</div>
 				</div>
             </div>
         </section>
         <!--================End Home Banner Area =================-->
-      
-		<br>
-		
-		<div id = "keybindFormContainer">
-			<h1>Adjust Keybinds</h1>
+        
+        <p>Are you sure you want to delete your account, including all of your settings and leaderboard data?</p>
 
-			
-				<div class="row">
-				  <div class="col sm-1">
-					<input type="text" class="form-control" id="0" placeholder="">
-				  </div>
-				  <div class="col sm-1">
-					<input type="text" class="form-control" id="1" placeholder="">
-				  </div>
-				  <div class="col sm-1">
-					<input type="text" class="form-control" id="2" placeholder="">
-				  </div>
-				  <div class="col sm-1">
-					<input type="text" class="form-control" id="3" placeholder="">
-				  </div>
-				</div>
-				<button type="submit" id="submitKeybindsButton" class="btn btn-primary">Submit</button>
-			  
-		</div>
+        <button type="submit" id="confirmDeleteButton" class="btn btn-primary">Yes</button>
+            </div>
 
-		<br>
-
-		<div id = "offsetFormContainer">
-			<h1>Adjust Offset</h1>
-			<p>Timing offset in ms:</p>
-
-			
-				<div class="row">
-				  <div class="col sm-1">
-					<input type="text" id="offsetInput" class="form-control" id="0" placeholder="">
-				  </div>
-				</div>
-				<button type="submit" id="submitOffsetButton" class="btn btn-primary">Submit</button>
-			  
-		</div>
-
-	</div>
-
+        <script src="js/main.js"></script>
+        
+        
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/stellar.js"></script>
-        <script src="vendors/lightbox/simpleLightbox.min.js"></script>
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/jquery.magnific-popup.min.js"></script>
         <script src="vendors/nice-select/js/jquery.nice-select.min.js"></script>
         <script src="vendors/isotope/imagesloaded.pkgd.min.js"></script>
         <script src="vendors/isotope/isotope-min.js"></script>
         <script src="vendors/owl-carousel/owl.carousel.min.js"></script>
-        <script src="vendors/jquery-ui/jquery-ui.js"></script>
         <script src="js/jquery.ajaxchimp.min.js"></script>
-        <script src="vendors/counter-up/jquery.waypoints.min.js"></script>
-        <script src="vendors/counter-up/jquery.counterup.js"></script>
         <script src="js/mail-script.js"></script>
+        <script src="vendors/counter-up/jquery.waypoints.min.js"></script>
+        <script src="vendors/counter-up/jquery.counterup.min.js"></script>
+        <!-- contact js -->
+        <script src="js/jquery.form.js"></script>
+        <script src="js/jquery.validate.min.js"></script>
+        <script src="js/contact.js"></script>
+        <!--gmaps Js-->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+        <script src="js/gmaps.min.js"></script>
         <script src="js/theme.js"></script>
 
-		
-	<script src="/__/firebase/7.18.0/firebase-app.js"></script>
-	<script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
-	<script src="/__/firebase/7.18.0/firebase-auth.js"></script>
-	<script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
-	<script src="/__/firebase/init.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/ui/5.0.0/firebase-ui-auth.js"></script>
-	<!-- Main Page Controller File  -->
-	<script src="js/main.js"></script>
+        <script src="/__/firebase/7.18.0/firebase-app.js"></script>
+        <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
+        <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+        <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+        <script src="/__/firebase/init.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/ui/5.0.0/firebase-ui-auth.js"></script>
+        <!-- Main Page Controller File  -->
+        <script src="js/main.js"></script>
+    </div>
     </body>
 </html>

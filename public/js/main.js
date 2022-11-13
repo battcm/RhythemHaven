@@ -84,6 +84,13 @@ rhythm.initializePage = function (signedInUserUid) {
 		//loginPageController.startFirebaseUI();
 	}
 
+	if(document.querySelector("#deleteAccountPage")) {
+		console.log("on delete acc page");
+		document.querySelector('#confirmDeleteButton').onclick = (event) => {
+			rhythm.userStatsManager.delete(signedInUserUid);
+		}
+	}
+
 	if(document.querySelector("#signOutPage")) {
 
 		console.log(`sign out`);
@@ -259,6 +266,23 @@ rhythm.UserStatsManager = class {
 		//console.log("UID: "+uid);
 		//docRef.id = uid;
 		//console.log("UID: "+docRef.id);
+	}
+
+	delete(uid){
+		console.log("deleting user  with uid: ");
+		console.log(uid);
+
+		//delete actual user
+		const user = firebase.auth().currentUser;
+		user.delete().then(()=> {
+			console.log("user deleted");
+		}).catch((error) => {
+		console.log("error");
+	    });
+
+		//delete data
+		this._ref.doc(uid).delete();
+		window.location.href = "index.html";
 	}
 
 	beginListening(changeListener) {
