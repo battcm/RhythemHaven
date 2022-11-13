@@ -81,7 +81,7 @@ rhythm.initializePage = function (signedInUserUid) {
 	if(document.querySelector("#loginPage")) {
 		console.log("on login page");
 		const loginPageController = new rhythm.LoginPageController();
-		loginPageController.startFirebaseUI();
+		//loginPageController.startFirebaseUI();
 	}
 
 	if(document.querySelector("#signOutPage")) {
@@ -192,8 +192,8 @@ rhythm.LoginPageController = class {
 		.catch((error) => {
 		  var errorCode = error.code;
 		  var errorMessage = error.message;
-		  console.log("Create Account error", errorCode, errorMessage);
-		  document.getElementById("errorText").innerHTML = `Create account error: +${errorMessage}`;
+		  console.log("Login error", errorCode, errorMessage);
+		  document.getElementById("errorText").innerHTML = `Login error: +${errorMessage}`;
 		  console.log(document.getElementById("errorText").innerHTML);
 		});
 	}
