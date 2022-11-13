@@ -30,7 +30,7 @@ function htmlToElement(html) {
 	html = html.trim();
 	template.innerHTML = html;
 	return template.content.firstChild;
-   }
+}
 
 rhythm.main = function () {
 	rhythm.userStatsManager = new rhythm.UserStatsManager();
@@ -683,15 +683,15 @@ rhythm.Game = class {
                 x = this.createNoteElement("leftNote", (-100 * (i + 1)));
                 noteContainer.appendChild(x);
                 this.totalNotes++;
-            } else if (this.level[1][i] == 1) {
+            } if (this.level[1][i] == 1) {
                 x = this.createNoteElement("leftMiddleNote", (-100 * (i + 1)));
                 noteContainer.appendChild(x);
                 this.totalNotes++;
-            } else if (this.level[2][i] == 1) {
+            } if (this.level[2][i] == 1) {
                 x = this.createNoteElement("rightMiddleNote", (-100 * (i + 1)));
                 noteContainer.appendChild(x);
                 this.totalNotes++;
-            } else if (this.level[3][i] == 1) {
+            } if (this.level[3][i] == 1) {
                 x = this.createNoteElement("rightNote", (-100 * (i + 1)));
                 noteContainer.appendChild(x);
                 this.totalNotes++;
