@@ -839,7 +839,7 @@ rhythm.GamePageController = class {
 		}
 
 		document.querySelector("#mainMenu").onclick = () => {
-			location.replace("http://localhost:5000/index.html"); // Needs to be changed when deployed
+			location.replace("https://rhythm-heaven-292e7.web.app/"); // Needs to be changed when deployed
 		}
 
 		document.querySelector("#begin").onclick = () => {
