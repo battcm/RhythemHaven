@@ -24,8 +24,6 @@ rhythm.settingsManager = null;
 //require('firebase/firestore');
 //user = currently signed in user
 
-
-
 function htmlToElement(html) {
 	var template = document.createElement('template');
 	html = html.trim();
@@ -129,6 +127,10 @@ rhythm.initializePage = function (signedInUserUid) {
 		}
 		rhythm.statsPageController = new rhythm.StatsPageController(user, signedIn);
 		rhythm.statsPageController.updateView();
+	}
+
+	if (document.querySelector("#gamePage")) {
+		let gamePageController = new rhythm.GamePageController();
 	}
 
 }
@@ -432,8 +434,17 @@ rhythm.SettingsManager = class {
 		return this._documentSnapshot.get(rhythm.FB_KEY_OFFSET);
 	}
 
-}
+	getPlayerStats() {
+		return [this._documentSnapshot.get(rhythm.FB_KEY_TOTAL_NOTES),
+		this._documentSnapshot.get(rhythm.FB_KEY_PERFECT), 
+		this._documentSnapshot.get(rhythm.FB_KEY_GREAT), 
+		this._documentSnapshot.get(rhythm.FB_KEY_GOOD), 
+		this._documentSnapshot.get(rhythm.FB_KEY_TOTAL_SCORE), 
+		this._documentSnapshot.get(rhythm.FB_KEY_SONGS_PLAYED),
+		this._documentSnapshot.get(rhythm.FB_KEY_HOURS_SPENT)]
+	}
 
+}
 
 rhythm.SettingsPageController = class {
 
@@ -475,7 +486,6 @@ rhythm.SettingsPageController = class {
 	}
 
 }
-
 
 rhythm.GlobalLeaderboardController = class {
 	
@@ -595,6 +605,289 @@ rhythm.StatsPageController = class {
 
 	}
 
+}
+
+rhythm.Game = class {
+    constructor() {
+        let page = window.location.pathname.split("/").pop();
+        this.cycles = 0;
+        this.score = 0;
+        this.noteStreak = 0;
+        this.isPaused = false;
+        this.totalNotes = 0;
+        this.perfectNotes = 0;
+        this.greatNotes = 0;
+        this.goodNotes = 0;
+        if (page == 'Test-Game.html'){
+            this.level = [
+                [1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1],
+                [0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0],
+                [0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1],
+                [0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0]]
+            this.initializeNotes();
+            this.interval = setInterval(this.runOneCycle.bind(this), 25);
+        }else if (page == 'Test-Game2.html'){
+            this.level = [
+                [1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1],
+                [0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0],
+                [0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1],
+                [0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0]]
+            this.initializeNotes();
+            this.interval = setInterval(this.runOneCycle.bind(this), 18.33333);
+        }else if (page == 'Test-Game3.html'){
+            this.level = [
+                [0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1],
+                [0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,0],
+                [1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,0,1],
+                [0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0,0,1,0,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,1,0]]
+            this.initializeNotes();
+            this.interval = setInterval(this.runOneCycle.bind(this), 20);
+        }
+		this.totalCycles = (Math.max(this.level[0].length, this.level[1].length, this.level[2].length, this.level[3].length) * 20) + 140;
+    }
+
+    // Spawns all the notes in at the beginning of the game before any frames occur.
+    // This was done instead of adding notes in as needed because that caused lag which wasn't able to be resolved. 
+    initializeNotes() {
+        let x = null;
+		let noteContainer = document.querySelector("#noteContainer");
+        for (let i = 0; i < this.level[0].length; i++) {
+            if (this.level[0][i] == 1) {
+                x = this.createNoteElement("leftNote", (-100 * (i + 1)));
+                noteContainer.appendChild(x);
+                this.totalNotes++;
+            } else if (this.level[1][i] == 1) {
+                x = this.createNoteElement("leftMiddleNote", (-100 * (i + 1)));
+                noteContainer.appendChild(x);
+                this.totalNotes++;
+            } else if (this.level[2][i] == 1) {
+                x = this.createNoteElement("rightMiddleNote", (-100 * (i + 1)));
+                noteContainer.appendChild(x);
+                this.totalNotes++;
+            } else if (this.level[3][i] == 1) {
+                x = this.createNoteElement("rightNote", (-100 * (i + 1)));
+                noteContainer.appendChild(x);
+                this.totalNotes++;
+            }
+        }
+    }
+
+    // Adds the given score to the current score and updates the scoreboard accordingly. 
+    updateScore(scoreIncrease) {
+        this.score += (scoreIncrease * this.generateScoreMultiplier());
+        document.querySelector("#score").innerHTML = `Score: ${this.score}`;
+        document.querySelector("#noteStreak").innerHTML = `Note Streak: ${this.noteStreak}`;
+        document.querySelector("#scoreMultiplier").innerHTML = `Score Multiplier: ${this.generateScoreMultiplier()}`;
+    }
+
+    // Generates a score multiplier based on the current note streak
+    generateScoreMultiplier() {
+        if (this.noteStreak >= 100) {
+            return 5;
+        } else if (this.noteStreak >= 50) {
+            return 3;
+        } else if (this.noteStreak >= 10) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+    // Runs one cycle of the game which involves moving the notes and removing those that fall off the screen.
+    runOneCycle() {
+        if (!this.isPaused) {
+            this.cycles = this.cycles + 1;
+            let Notes = document.querySelectorAll(".note");
+            Notes.forEach((note) => {
+                let y = parseInt(note.dataset.height);
+                note.style=`top: ${y}px`;
+                note.dataset.height = `${y + 5}`;
+                if (y > 540 && note.dataset.scored == "false") {
+                    note.dataset.scored = "miss";
+                    this.noteStreak = 0;
+                    this.updateScore(0);
+                }
+                if (y >= 635) {
+                    note.remove();
+                }
+            })
+            if (this.cycles == this.totalCycles) {
+                console.log("Final Total Notes", this.totalNotes);
+                console.log("Final Perfect Notes", this.perfectNotes);
+                console.log("Final Great Notes", this.greatNotes);
+                console.log("Final Good Notes", this.goodNotes);
+				console.log("Final Score: ", this.score);
+				this.postToPersonalStats();
+            }
+        }
+    }
+
+    // Pauses the game. 
+    pause() {
+        this.isPaused = !this.isPaused;
+        if (this.isPaused) {
+            document.querySelector("#beatIt").pause();
+        } else {
+            document.querySelector("#beatIt").play();        
+        }
+    }
+
+    endGame() {
+        clearInterval(this.interval);
+    }
+
+    postToLeaderboard() {
+
+    }
+
+    postToPersonalStats() {
+		let stats = rhythm.settingsManager.getPlayerStats();
+		console.log("Previous Total Notes: ", stats[0]);
+		let totalNotes = stats[0];
+		console.log("Previous Perfect Notes: ", stats[1]);
+		let perfectNotes = stats[1];
+		console.log("Previous  Great Notes: ", stats[2]);
+		let greatNotes = stats[2];
+		console.log("Previous Good Notes: ", stats[3]);
+		let goodNotes = stats[3];
+		console.log("Previous Total Score: ", stats[4]);
+		let totalScore = stats[4];
+		console.log("Previous Songs Played: ", stats[5]);
+		let totalSongs = stats[5];
+		console.log("Previous Hours Played: ", stats[6])
+		let totalHours = stats[6];
+		let newTotal = totalNotes + this.totalNotes;
+		let newPerfect = perfectNotes + this.perfectNotes
+		let newGreat = greatNotes + this.greatNotes
+		let newGood = goodNotes + this.goodNotes
+		rhythm.settingsManager._ref.update({
+			[rhythm.FB_KEY_TOTAL_NOTES]: (newTotal),
+			[rhythm.FB_KEY_PERFECT]: (newPerfect),
+			[rhythm.FB_KEY_GREAT]: (newGreat),
+			[rhythm.FB_KEY_GOOD]: (newGood),
+			[rhythm.FB_KEY_TOTAL_SCORE]: (totalScore + this.score),
+			[rhythm.FB_KEY_SONGS_PLAYED]: (totalSongs + 1),
+			[rhythm.FB_KEY_HOURS_SPENT]: (totalHours + 0.064),
+			[rhythm.FB_KEY_ACCURACY]: (((newTotal * 100)/(newPerfect + newGreat + newGood)).toFixed(3)),
+		})
+		.then( () => {console.log("Post to stats successful?")})
+		.catch( (error) => {console.log("error: ", error)})
+
+    }
+
+	// Creates a note giving it the classes note and noteType while also setting its height to height. 
+	createNoteElement (noteType, height) {
+		let note = document.createElement('img');
+		note.src="img/Neon_Arrow.png";
+		note.dataset.height = height;
+		note.style=`top: ${height}px`;
+		note.dataset.scored = "false";
+		note.className = `note ${noteType}`; 
+		return note; 
+	}
+
+	// Checks to see if any note is within the scoring zone and scores the note accordingly
+	// Alos increments the perfect, great, and good note trackers accordingly. 
+	handleScoringNotes(noteType) {
+		if (!this.isPaused){
+			let Notes = document.querySelectorAll(noteType);
+			Notes.forEach((note) => {
+				if (note.dataset.scored == "false") {
+					let y = parseInt(note.dataset.height);
+					if (y >= 500 && y <= 505) {
+						note.dataset.scored = "hit";
+						console.log("perfect");
+						this.noteStreak++;
+						this.perfectNotes++;
+						this.updateScore(25);
+					} else if (y >= 485 && y <= 520) {
+						note.dataset.scored = "hit";
+						console.log("great");
+						this.noteStreak++;
+						this.greatNotes++;
+						this.updateScore(10);
+					} else if (y >= 465 && y <= 540) {
+						note.dataset.scored = "hit";
+						console.log("good");
+						this.noteStreak++;
+						this.goodNotes++;
+						this.updateScore(5);
+					}
+				}
+			})
+		}
+	}
+
+	handlePressed(press){
+		document.querySelector(".baseNote" + press).style = "filter: hue-rotate(40deg) grayscale(0%);"
+		setTimeout(() => {
+			document.querySelector(".baseNote" + press).style = "filter: grayscale(100%);"
+		}, 110)
+	}
+}
+
+rhythm.GamePageController = class {
+	constructor() {
+		console.log("Game page");
+
+		document.querySelector("#pause").onclick = () => {
+			this.publicGame.pause();
+		}
+
+		document.querySelector("#restart").onclick = () => {
+			location.reload();
+		}
+
+		document.querySelector("#mainMenu").onclick = () => {
+			location.replace("http://localhost:5000/index.html"); // Needs to be changed when deployed
+		}
+
+		document.querySelector("#begin").onclick = () => {
+			this.publicGame = new rhythm.Game();
+			rhythm.settingsManager.beginListening(this.initializeKeyBinds.bind(this));
+			setTimeout(rhythm.settingsManager.stopListening, 2000);
+			document.querySelector("#beatIt").play();
+			document.querySelector("#begin").hidden = true;
+			document.querySelector("#pause").hidden = false;
+			document.querySelector("#restart").hidden = false;
+			document.querySelector("#mainMenu").hidden = false;
+    }
+	}
+
+	// initialized the keyboard event listener to call handleScoringNotes
+	initializeKeyBinds() {
+		let keybinds = rhythm.settingsManager.getKeybinds();
+		console.log("Key Binds: ", keybinds);
+		document.addEventListener("keydown", (event) => {
+			if (this.publicGame) {
+				switch(event.key) {
+					case keybinds[0]:
+						this.publicGame.handleScoringNotes(".leftNote");
+						this.publicGame.handlePressed("1");
+						return;
+					case keybinds[1]:
+						this.publicGame.handleScoringNotes(".leftMiddleNote");
+						this.publicGame.handlePressed("2");
+						return;
+					case keybinds[2]:
+						this.publicGame.handleScoringNotes(".rightMiddleNote");
+						this.publicGame.handlePressed("3");
+						return;
+					case keybinds[3]:
+						this.publicGame.handleScoringNotes(".rightNote");
+						this.publicGame.handlePressed("4");
+						return;
+					case "p":
+						this.publicGame.pause();
+						return;
+					case "Escape":
+						this.publicGame.pause();
+					default:
+						return;
+				}
+			}
+		})
+	}
 }
 
 rhythm.main();

@@ -22,11 +22,12 @@
     <body>
 
         <!-- Note Container -->
+    <div id="gamePage">
         <div id="noteContainer">
 			<button id="begin" class="neonText">Press to Begin</button>
 			<button id="pause" class="neonText" hidden="true">Pause</button>
 			<button id="restart" class="neonText" hidden="true">Restart</button>
-			<button id="mainMenu" class="neonText" hidden="true">MainMenu</button>
+			<button id="mainMenu" class="neonText">MainMenu</button>
 			<div id="score" class="neonText">Score: 0</div>
 			<div id="noteStreak" class="neonText">Note Streak: 0</div>
 			<div id="scoreMultiplier" class="neonText">Score Multiplier: 1</div>
@@ -38,6 +39,7 @@
             <img class="baseNote baseNote3" src="img/Neon_Arrow.png">
             <img class="baseNote baseNote4" src="img/Neon_Arrow.png">
         </div>
+    </div>
         <!-- End of Note Container -->
         
         <!-- Optional JavaScript -->
@@ -55,9 +57,13 @@
         <script src="js/jquery.ajaxchimp.min.js"></script>
         <script src="vendors/counter-up/jquery.waypoints.min.js"></script>
         <script src="vendors/counter-up/jquery.counterup.js"></script>
+        <script src="/__/firebase/7.18.0/firebase-app.js"></script>
+        <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
+        <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+        <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+        <script src="/__/firebase/init.js"></script>
         <script src="js/mail-script.js"></script>
         <script src="js/theme.js"></script>
         <script src="js/main.js"></script>
-		<script src="js/game.js"></script>
     </body>
 </html>
