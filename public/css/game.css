@@ -133,3 +133,22 @@
   width: 170px;
   height: 70px;
 }
+
+#perfectNotes {
+  position:absolute;
+  left: 650px;
+  top: 200px;
+}
+
+#greatNotes {
+  position:absolute;
+  left: 650px;
+  top: 300px;
+}
+
+#goodNotes {
+  position:absolute;
+  left: 650px;
+  top: 400px;
+}
+

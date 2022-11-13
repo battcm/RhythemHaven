@@ -681,6 +681,9 @@ rhythm.Game = class {
         document.querySelector("#score").innerHTML = `Score: ${this.score}`;
         document.querySelector("#noteStreak").innerHTML = `Note Streak: ${this.noteStreak}`;
         document.querySelector("#scoreMultiplier").innerHTML = `Score Multiplier: ${this.generateScoreMultiplier()}`;
+		document.querySelector("#perfectNotes").innerHTML = `Perfect Notes: ${this.perfectNotes}`;
+		document.querySelector("#greatNotes").innerHTML = `Great Notes: ${this.greatNotes}`;
+		document.querySelector("#goodNotes").innerHTML = `Good Notes: ${this.goodNotes}`;
     }
 
     // Generates a score multiplier based on the current note streak
@@ -720,6 +723,9 @@ rhythm.Game = class {
                 console.log("Final Great Notes", this.greatNotes);
                 console.log("Final Good Notes", this.goodNotes);
 				console.log("Final Score: ", this.score);
+				document.querySelector("#perfectNotes").hidden = false;
+				document.querySelector("#greatNotes").hidden = false;
+				document.querySelector("#goodNotes").hidden = false;
 				this.postToPersonalStats();
             }
         }
