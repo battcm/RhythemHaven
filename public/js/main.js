@@ -436,7 +436,9 @@ rhythm.SettingsManager = class {
 		this._documentSnapshot.get(rhythm.FB_KEY_PERFECT), 
 		this._documentSnapshot.get(rhythm.FB_KEY_GREAT), 
 		this._documentSnapshot.get(rhythm.FB_KEY_GOOD), 
-		this._documentSnapshot.get(rhythm.FB_KEY_TOTAL_SCORE)]
+		this._documentSnapshot.get(rhythm.FB_KEY_TOTAL_SCORE), 
+		this._documentSnapshot.get(rhythm.FB_KEY_SONGS_PLAYED),
+		this._documentSnapshot.get(rhythm.FB_KEY_HOURS_SPENT)]
 	}
 
 }
@@ -745,12 +747,23 @@ rhythm.Game = class {
 		let goodNotes = stats[3];
 		console.log("Previous Total Score: ", stats[4]);
 		let totalScore = stats[4];
+		console.log("Previous Songs Played: ", stats[5]);
+		let totalSongs = stats[5];
+		console.log("Previous Hours Played: ", stats[6])
+		let totalHours = stats[6];
+		let newTotal = totalNotes + this.totalNotes;
+		let newPerfect = perfectNotes + this.perfectNotes
+		let newGreat = greatNotes + this.greatNotes
+		let newGood = goodNotes + this.goodNotes
 		rhythm.settingsManager._ref.update({
-			[rhythm.FB_KEY_TOTAL_NOTES]: (totalNotes + this.totalNotes),
-			[rhythm.FB_KEY_PERFECT]: (perfectNotes + this.perfectNotes),
-			[rhythm.FB_KEY_GREAT]: (greatNotes + this.greatNotes),
-			[rhythm.FB_KEY_GOOD]: (goodNotes + this.goodNotes),
-			[rhythm.FB_KEY_TOTAL_SCORE]: (totalScore + this.score)
+			[rhythm.FB_KEY_TOTAL_NOTES]: (newTotal),
+			[rhythm.FB_KEY_PERFECT]: (newPerfect),
+			[rhythm.FB_KEY_GREAT]: (newGreat),
+			[rhythm.FB_KEY_GOOD]: (newGood),
+			[rhythm.FB_KEY_TOTAL_SCORE]: (totalScore + this.score),
+			[rhythm.FB_KEY_SONGS_PLAYED]: (totalSongs + 1),
+			[rhythm.FB_KEY_HOURS_SPENT]: (totalHours + 0.064),
+			[rhythm.FB_KEY_ACCURACY]: (((newTotal * 100)/(newPerfect + newGreat + newGood)).toFixed(3)),
 		})
 		.then( () => {console.log("Post to stats successful?")})
 		.catch( (error) => {console.log("error: ", error)})

@@ -100,7 +100,7 @@
 
 #begin {
   position: absolute;
-  left: 41.5vw;
+  left: 640px;
   top: 48vh;
   background-color: black;
   width: 250px;
@@ -110,7 +110,7 @@
 #pause {
   position: absolute;
   left: 1360px;
-  top: 10px;
+  top: 170px;
   background-color: black;
   width: 170px;
   height: 70px;
@@ -128,7 +128,7 @@
 #mainMenu {
   position: absolute;
   left: 1360px;
-  top: 170px;
+  top: 10px;
   background-color: black;
   width: 170px;
   height: 70px;
