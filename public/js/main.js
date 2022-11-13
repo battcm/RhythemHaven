@@ -32,12 +32,7 @@ function htmlToElement(html) {
    }
 
 rhythm.main = function () {
-	//settingsManager = null;
 	rhythm.userStatsManager = new rhythm.UserStatsManager();
-	//const app = initializeApp(firebaseConfig);
-	//const db = getFirestore(app);
-
-	//firebase.initializeApp();
 
 	console.log("checking auth...")
 
@@ -61,19 +56,21 @@ rhythm.main = function () {
 		  console.log('phoneNumber :>> ', phoneNumber);
 		  console.log('isAnonymous :>> ', isAnonymous);
 		  console.log('uid :>> ', window.signedInUser);
+		  //make sure auth stuff finishes before initializepage is called
+		  setTimeout(rhythm.initializePage,600,rhythm.settingsManager.getSignedInUser());
 		} else {
 		  // User is signed out
 		  // ...
 		  console.log("There is no user signed in");
+		   //make sure auth stuff finishes before initializepage is called
+		   setTimeout(rhythm.initializePage,600,null);
 		}
 	  })
 	  
-	setTimeout(console.log,600,("uid after auth: "+window.signedInUser));
+	//setTimeout(console.log,600,("uid after auth: "+window.signedInUser));
 
-	//make sure auth stuff finishes before initializepage is called
-	
-	setTimeout(rhythm.initializePage,600,window.signedInUser);
-	console.log("called initializepage. uid is ..."+window.signedInUser);
+
+	//console.log("called initializepage. uid is ..."+rhythm.settingsManager.getSignedInUser());
 	//rhythm.initializePage(uid);
 }
 
@@ -365,7 +362,9 @@ rhythm.SettingsManager = class {
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
 		this._ref = firebase.firestore().collection(rhythm.FB_COLLECTION_USERSTATS).doc(signedInUserUid);
+		this.signedInUserUid = signedInUserUid;
 		console.log("settings manager created!");
+		console.log("signed in user from settings manager: "+signedInUserUid);
 
 	}
 
@@ -411,6 +410,10 @@ rhythm.SettingsManager = class {
 		return [this._documentSnapshot.data().keyBind0,this._documentSnapshot.data().keyBind1,
 			this._documentSnapshot.data().keyBind2,this._documentSnapshot.data().keyBind3
 		];
+	}
+
+	getSignedInUser(){
+		return this.signedInUserUid;
 	}
 
 	updateOffset(offset){
@@ -560,6 +563,8 @@ rhythm.StatsPageController = class {
 
 	updateView() {
 		const title = document.querySelector("#statsTitle");
+		console.log("Calling updateview");
+		console.log("this.pageUserUid = "+this.pageUserUid);
 		this.pageUserObject = rhythm.userStatsManager.getUserByUid(this.pageUserUid);
 		console.log("page user: ");
 		console.log(this.pageUserObject);
