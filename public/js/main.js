@@ -768,7 +768,7 @@ rhythm.Game = class {
 			[rhythm.FB_KEY_TOTAL_SCORE]: (totalScore + this.score),
 			[rhythm.FB_KEY_SONGS_PLAYED]: (totalSongs + 1),
 			[rhythm.FB_KEY_HOURS_SPENT]: (totalHours + 0.064),
-			[rhythm.FB_KEY_ACCURACY]: (((newTotal * 100)/(newPerfect + newGreat + newGood)).toFixed(3)),
+			[rhythm.FB_KEY_ACCURACY]: ((((newPerfect + newGreat + newGood) * 100)/(newTotal)).toFixed(3)),
 		})
 		.then( () => {console.log("Post to stats successful?")})
 		.catch( (error) => {console.log("error: ", error)})
@@ -839,7 +839,7 @@ rhythm.GamePageController = class {
 		}
 
 		document.querySelector("#mainMenu").onclick = () => {
-			location.replace("http://localhost:5000/index.html"); // Needs to be changed when deployed
+			location.replace("https://rhythm-heaven-292e7.web.app/"); // Needs to be changed when deployed
 		}
 
 		document.querySelector("#begin").onclick = () => {
